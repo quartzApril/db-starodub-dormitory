@@ -42,25 +42,51 @@ dbcheck run demo/lab1.sql     # сценарий лабы 1
 
 ## ER-диаграмма
 
-<!-- Замените пример своими таблицами: 5+ таблиц, связь N:M через связующую таблицу. -->
-
 ```mermaid
 erDiagram
-    films ||--o{ sessions : "показывают"
-    halls ||--o{ sessions : "проходит в"
-    sessions ||--o{ tickets : "продано"
-    films ||--o{ film_genres : ""
-    genres ||--o{ film_genres : ""
-
-    films {
+    rooms {
         int id PK
-        text title
+        int number
+        int beds_count
     }
-    film_genres {
-        int film_id PK, FK
-        int genre_id PK, FK
+    students {
+        int id PK
+        text first_name
+        text last_name
+        int cours
     }
+    residencies {
+        int id PK
+        int student_id FK
+        int room_id FK 
+        date check_in_date
+        date check_out_date
+    }
+    repair_requests {
+        int id PK
+        int room_id FK
+        int student_id FK
+        text description
+        text status
+        timestamptz created_at
+    }
+    duties {
+        int id PK
+        date duty_date
+    }
+    duty_students {
+        int duty_id PK, FK
+        int student_id PK, FK
+    }
+    rooms ||--o{ residencies : "has"
+    students ||--o{ residencies : "lives in"
+    rooms ||--o{ repair_requests : "has"
+    students ||--o{ repair_requests : "submits"
+    duties ||--o{ duty_students : "includes"
+    students ||--o{ duty_students : "takes part in"
+    
 ```
+
 
 ## Ограничения
 
