@@ -53,7 +53,7 @@ erDiagram
         int id PK
         text first_name
         text last_name
-        int cours
+        int course
     }
     residencies {
         int id PK
