@@ -1,21 +1,11 @@
--- Лаба 1. Сценарий для показа. Формат описан в docs/scenarios.md.
--- Запуск: dbcheck run demo/lab1.sql, или в psql: \i /demo/lab1.sql
---
--- Каждый шаг: строка «-- N. что показываем», под ней «-- expect: ответ базы», под ней запрос.
--- Пример, замените своими запросами:
---
--- -- 1. Таблицы на месте: 6 таблиц
--- -- expect: rows 6
--- SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY 1;
---
--- -- 2. Отрицательная цена билета: ошибка CHECK
--- -- expect: error check
--- INSERT INTO tickets (session_id, seat_id, price) VALUES (1, 1, -100);
---
--- -- 3. Несуществующий сеанс: ошибка внешнего ключа
--- -- expect: error fk
--- INSERT INTO tickets (session_id, seat_id, price) VALUES (9999, 1, 300);
---
--- -- 4. То же место на тот же сеанс второй раз: ошибка UNIQUE
--- -- expect: error unique
--- INSERT INTO tickets (session_id, seat_id, price) VALUES (1, 1, 300);
+-- 1. Вставляем комнату 2-ой раз: ошибка UNIQUE
+-- expect: error unique
+INSERT INTO rooms (number, beds_count) VALUES (100, 3);
+
+-- 2. Нарушение CHECK
+-- expect: error check
+INSERT INTO repair_requests (room_id, student_id, description, status, created_at) VALUES (3, 3, 'У мен нет пиццы', 'iWantPizza', '2027-09-10 14:30:00+03');
+
+-- 3. Ссылка на несуществующую строку
+-- expect: error fk
+INSERT INTO duty_students(duty_id, student_id) VALUES (1, 100)

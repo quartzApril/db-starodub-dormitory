@@ -1,6 +1,6 @@
 CREATE TABLE rooms (
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    number integer NOT NULL UNIQUE,
+    number integer NOT NULL UNIQUE CHECK ( number > 0 ),
     beds_count integer NOT NULL CHECK (beds_count > 0)
 );
 
