@@ -19,8 +19,8 @@ CREATE TABLE duties(
 CREATE TABLE residencies
 (
     id            integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    student_id    integer NOT NULL REFERENCES students (id),
-    room_id       integer NOT NULL REFERENCES rooms (id),
+    student_id    integer NOT NULL REFERENCES students (id) ON DELETE RESTRICT,
+    room_id       integer NOT NULL REFERENCES rooms (id) ON DELETE RESTRICT,
     check_in_date date NOT NULL,
     check_out_date date CHECK ( check_out_date >= check_in_date ),
     UNIQUE(student_id, check_in_date)
@@ -28,16 +28,16 @@ CREATE TABLE residencies
 
 CREATE TABLE repair_requests(
     id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    room_id integer NOT NULL REFERENCES rooms (id),
-    student_id integer NOT NULL REFERENCES students (id),
+    room_id integer NOT NULL REFERENCES rooms (id) ON DELETE RESTRICT,
+    student_id integer NOT NULL REFERENCES students (id) ON DELETE RESTRICT,
     description text NOT NULL,
     status text NOT NULL CHECK ( status IN ('accepted', 'in_progress', 'done') ),
     created_at timestamptz NOT NULL
 );
 
 CREATE TABLE duty_students(
-        duty_id integer NOT NULL REFERENCES duties (id),
-        student_id integer NOT NULL REFERENCES students (id),
+        duty_id integer NOT NULL REFERENCES duties (id) ON DELETE CASCADE,
+        student_id integer NOT NULL REFERENCES students (id) ON DELETE CASCADE,
         PRIMARY KEY(duty_id, student_id)
 );
 
