@@ -73,3 +73,10 @@ INSERT INTO repair_requests (room_id, student_id, description, status, created_a
     (4, 4, 'Искрит розетка', 'done', '2026-05-18 19:45:00+03'),
     (6, 6, 'Сломан стул', 'done', '2026-04-22 10:30:00+03'),
     (9, 9, 'Протекает потолок', 'accepted', '2026-07-03 12:00:00+03');
+
+-- Комната без заявок (для запроса 8 «сироты»)
+INSERT INTO rooms (number, beds_count) VALUES (110, 1);
+
+-- Студент без дежурств (для запроса 10)
+INSERT INTO students (first_name, last_name, course)
+VALUES ('Без', 'Дежурств', 2);
