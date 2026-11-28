@@ -168,3 +168,27 @@ erDiagram
   лаба 4: «Гонка»;
   лаба 5: «Производительность» (таблица до / после, когда индекс не помогает, размеры).
 -->
+
+## Гонка
+
+**Что происходит без защиты** (`demo/race.sql`):
+1. В комнате 999 одна кровать, она свободна.
+2. Окно A начинает заселять студента 1: триггер считает жильцов, видит 0 и пропускает.
+3. Окно B в тот же момент заселяет студента 2: триггер не видит незафиксированную вставку окна A, тоже видит 0 и пропускает.
+4. Оба окна делают `COMMIT`, в комнате на одну кровать два жильца. Проверка возвращает `false`.
+
+**Исправление** (`db/20_race_fix.sql`, `demo/race_fixed.sql`): функция `check_in_student_safe` перед вставкой блокирует строку комнаты через `SELECT ... FOR UPDATE`. Окно B ждёт, пока окно A закончит. Когда A сделал `COMMIT`, триггер в B уже видит заселённого студента и останавливает операцию ошибкой. Проверка возвращает `true`.
+
+## Резервная копия
+
+```bash
+# сделать копию внутри контейнера
+docker compose exec db pg_dump -U postgres -d app -Fc -f /tmp/app.dump
+
+# создать чистую базу и восстановить в неё
+docker compose exec db psql -U postgres -c "CREATE DATABASE app_restore;"
+docker compose exec db pg_restore -U postgres -d app_restore /tmp/app.dump
+
+# проверить, что данные на месте
+docker compose exec db psql -U postgres -d app_restore -c "SELECT count(*) FROM repair_requests;"
+```
